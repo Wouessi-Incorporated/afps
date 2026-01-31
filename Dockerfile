@@ -48,5 +48,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
         process.exit(res.statusCode === 200 ? 0 : 1) \
     }).on('error', () => process.exit(1))" || exit 1
 
-# Start application
-CMD ["npm", "start"]
+# Start application with mock database
+CMD ["npm", "run", "start:mock"]
