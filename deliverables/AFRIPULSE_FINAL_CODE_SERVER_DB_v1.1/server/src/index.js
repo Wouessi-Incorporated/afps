@@ -46,8 +46,10 @@ async function initializeDatabase() {
     console.log("[AFRIPULSE] Database initialization completed");
   } catch (error) {
     console.error("[AFRIPULSE] Database initialization failed:", error.message);
-    // Don't exit - try to continue with mock database
+    console.log("[AFRIPULSE] Falling back to mock database...");
+    // Switch to mock database
     process.env.DATABASE_URL = "mock";
+    console.log("[AFRIPULSE] Mock database initialized");
   }
 }
 
