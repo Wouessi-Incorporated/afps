@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: afripulse
+      POSTGRES_PASSWORD: afripulse
+      POSTGRES_DB: afripulse
+    ports:
+      - "5432:5432"
+    volumes:
+      - afripulse_db:/var/lib/postgresql/data
+
+  server:
+    image: node:20-alpine
+    working_dir: /app/server
+    volumes:
+      - ./:/app
+    env_file:
+      - ./env/server.env
+    command: sh -c "npm install && npm run migrate && npm run seed && npm start"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  afripulse_db:

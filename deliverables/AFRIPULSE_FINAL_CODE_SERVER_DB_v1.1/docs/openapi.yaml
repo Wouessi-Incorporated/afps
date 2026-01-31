@@ -1,0 +1,21 @@
+openapi: 3.0.3
+info:
+  title: AFRIPULSE API
+  version: 1.0.0
+paths:
+  /health:
+    get:
+      responses:
+        '200': { description: OK }
+  /public/media-shares:
+    get:
+      parameters:
+        - in: query
+          name: country
+          schema: { type: string }
+        - in: query
+          name: category
+          schema: { type: string, enum: [ALL,TV,RADIO,ONLINE,SOCIAL] }
+      responses:
+        '200':
+          description: Media shares last 7 days

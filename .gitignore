@@ -1,0 +1,104 @@
+﻿# Dependencies
+node_modules/
+npm-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.env.local
+.env.*.local
+*.sublime-project
+*.sublime-workspace
+.vim/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory
+coverage/
+.nyc_output/
+
+# Build & Distribution
+dist/
+build/
+out/
+.next/
+.nuxt/
+.cache/
+.vuepress/dist/
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+
+# Misc
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.eslintcache
+.prettierignore
+*.tsbuildinfo
+.turbo/
+
+# Logs
+logs
+*.log
+
+# Optional npm cache directory
+.npm
+
+# Temporary directories
+tmp/
+temp/
+.tmp/
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Testing
+.jest/
+.mocha/
+
+# Archive files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+
+# Database files (if using local SQLite)
+*.db
+*.sqlite
+*.sqlite3
+
+# Local configuration
+local.env
+config.local.js
+
+# qodo
+.qodo/
+
+# Node.js
+.node_repl_history
+
+# System files
+.DS_Store
+.AppleDouble
+.LSOverride

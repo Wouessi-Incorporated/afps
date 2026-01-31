@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>AFRIPULSE — Dashboard</title>
+  <link rel="icon" href="assets/afripulse_logo.png"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+  <div class="topbar">
+    <div class="container">
+      <div class="nav">
+        <a class="brand" href="index.html"><img src="assets/afripulse_logo.png" alt="AFRIPULSE logo"/><span>AFRIPULSE</span></a>
+        <div class="links">
+          <a href="products.html" data-i18n="nav_products">Products</a>
+          <a href="methodology.html" data-i18n="nav_methodology">Methodology</a>
+          <a href="media.html" data-i18n="nav_media">Media Intelligence</a>
+          <a href="corporate.html" data-i18n="nav_corporate">Corporate</a>
+          <a href="research.html" data-i18n="nav_research">Market Research</a>
+          <a href="pricing.html" data-i18n="nav_pricing">Pricing</a>
+          <a href="dashboard.html" data-i18n="nav_dashboard">Dashboard</a>
+        </div>
+        <div class="lang">
+          <select id="countrySelect" class="btn secondary" title="Default country">
+            <option value="">Country…</option>
+            <option value="NG">Nigeria</option>
+            <option value="ZA">South Africa</option>
+            <option value="KE">Kenya</option>
+            <option value="EG">Egypt</option>
+            <option value="MA">Morocco</option>
+            <option value="CM">Cameroon</option>
+            <option value="SN">Senegal</option>
+            <option value="CI">Côte d’Ivoire</option>
+            <option value="GH">Ghana</option>
+            <option value="ET">Ethiopia</option>
+          </select>
+          <button class="btn" data-lang-btn="en">EN</button>
+          <button class="btn" data-lang-btn="fr">FR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+  <div class="container">
+    <h2>Dashboard (public demo)</h2>
+    <div class="kpi">
+      <div class="card"><div class="num" id="kpiTotal">—</div><div>Total responses (7d)</div></div>
+      <div class="card"><div class="num" id="kpiTop">—</div><div>Top outlet share</div></div>
+      <div class="card"><div class="num" id="kpiCountry">—</div><div>Country</div></div>
+    </div>
+    <div style="height:10px"></div>
+    <div class="card">
+      <h3>Media Shares (% last 7 days)</h3>
+      <div class="row" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px">
+        <select id="dashCountry" class="btn secondary">
+          <option value="NG">Nigeria</option>
+          <option value="ZA">South Africa</option>
+          <option value="KE">Kenya</option>
+          <option value="EG">Egypt</option>
+          <option value="MA">Morocco</option>
+          <option value="CM">Cameroon</option>
+          <option value="SN">Senegal</option>
+          <option value="CI">Côte d’Ivoire</option>
+        </select>
+        <select id="dashCat" class="btn secondary">
+          <option value="ALL">ALL</option>
+          <option value="TV">TV</option>
+          <option value="RADIO">RADIO</option>
+          <option value="ONLINE">ONLINE</option>
+          <option value="SOCIAL">SOCIAL</option>
+        </select>
+        <button class="btn primary" id="btnRefresh">Refresh</button>
+      </div>
+      <pre id="out" style="white-space:pre-wrap;margin:0"></pre>
+      <div class="small">API base URL is a placeholder. Set <code>window.AFRIPULSE_API</code> to your deployed server URL.</div>
+    </div>
+  </div>
+</div>
+<script>
+(async function(){
+  const API = window.AFRIPULSE_API || "http://localhost:8080";
+  const out = document.getElementById('out');
+  const btn = document.getElementById('btnRefresh');
+  const cSel = document.getElementById('dashCountry');
+  const catSel = document.getElementById('dashCat');
+
+  async function refresh(){
+    const country = cSel.value;
+    const cat = catSel.value;
+    const r = await fetch(`${API}/public/media-shares?country=${country}&category=${cat}`);
+    const data = await r.json();
+    const lines = (data.rows||[]).slice(0,10).map(x=>`${(x.share*100).toFixed(1)}% | ${x.item} (${x.responses})`);
+    out.textContent = `country=${data.country} category=${data.category} total=${data.total}\n\n` + lines.join('\n');
+
+    document.getElementById('kpiTotal').textContent = data.total ?? '—';
+    document.getElementById('kpiCountry').textContent = data.country ?? '—';
+    document.getElementById('kpiTop').textContent = lines[0] ? lines[0].split('|')[0].trim() : '—';
+  }
+
+  btn.addEventListener('click', refresh);
+  await refresh();
+})();
+</script>
+
+  <div class="footer">
+    <div class="container">
+      <div data-i18n="footer">© AFRIPULSE — All rights reserved.</div>
+      <div class="small">Brand colors: #0B1C2D / #00C389</div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

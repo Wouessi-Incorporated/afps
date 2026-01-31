@@ -1,0 +1,38 @@
+{
+  "name": "afripulse-complete-system",
+  "version": "1.2.0",
+  "description": "AFRIPULSE - Complete media intelligence and survey platform for Africa",
+  "main": "start.js",
+  "scripts": {
+    "start": "node start.js",
+    "dev": "node start.js",
+    "install-deps": "cd deliverables/AFRIPULSE_FINAL_CODE_SERVER_DB_v1.1/server && npm install",
+    "server": "cd deliverables/AFRIPULSE_FINAL_CODE_SERVER_DB_v1.1/server && DATABASE_URL=mock npm start",
+    "website": "cd deliverables/AFRIPULSE_FINAL_WEBSITE_v1 && node server.js",
+    "test": "cd deliverables/AFRIPULSE_FINAL_CODE_SERVER_DB_v1.1/server && DATABASE_URL=mock npm test"
+  },
+  "keywords": [
+    "africa",
+    "media",
+    "survey",
+    "whatsapp",
+    "analytics",
+    "dashboard",
+    "api"
+  ],
+  "author": "AFRIPULSE Team",
+  "license": "UNLICENSED",
+  "private": true,
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/afripulse/complete-system.git"
+  },
+  "bugs": {
+    "url": "https://github.com/afripulse/complete-system/issues"
+  },
+  "homepage": "https://afripulse.com"
+}
