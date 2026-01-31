@@ -1,45 +1,44 @@
-# AFRIPULSE Backend API Server Dockerfile (Main for Coolify)
+# AFRIPULSE Backend API Server - Optimized for Coolify
 FROM node:20-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies for building native modules
+# Install system dependencies
 RUN apk add --no-cache python3 make g++ curl
 
-# Copy backend package.json first (for better caching)
+# Copy package files
 COPY deliverables/AFRIPULSE_FINAL_CODE_SERVER_DB_v1.1/server/package.json ./
-
-# Copy package-lock.json if it exists, otherwise skip
 COPY deliverables/AFRIPULSE_FINAL_CODE_SERVER_DB_v1.1/server/package-lock.json* ./
 
-# Install dependencies (use npm install if no lock file, npm ci if lock file exists)
+# Install dependencies based on available files
 RUN if [ -f package-lock.json ]; then \
+        echo "Using npm ci with package-lock.json" && \
         npm ci --only=production; \
     else \
+        echo "Using npm install (no package-lock.json found)" && \
         npm install --only=production; \
     fi && \
     npm cache clean --force
 
-# Copy all backend source code
+# Copy source code
 COPY deliverables/AFRIPULSE_FINAL_CODE_SERVER_DB_v1.1/server/ ./
 
-# Create non-root user for security
+# Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001 && \
     chown -R nodejs:nodejs /app
 
-# Switch to non-root user
 USER nodejs
 
 # Expose port
 EXPOSE 8080
 
-# Health check for container orchestration
+# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
     CMD node -e "require('http').get('http://localhost:8080/health', (res) => { \
         process.exit(res.statusCode === 200 ? 0 : 1) \
     }).on('error', () => process.exit(1))" || exit 1
 
-# Start the backend server
+# Start application
 CMD ["npm", "start"]
