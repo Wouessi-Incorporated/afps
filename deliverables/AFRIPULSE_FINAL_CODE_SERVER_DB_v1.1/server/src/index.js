@@ -10,6 +10,17 @@ const { whatsappRouter } = require("./routes/whatsapp");
 
 async function initializeDatabase() {
   try {
+    // Check DATABASE_URL first - if mock, skip all PostgreSQL attempts
+    const dbUrl = process.env.DATABASE_URL;
+    console.log(
+      `[AFRIPULSE] Database URL type: ${dbUrl === "mock" ? "mock" : "postgresql"}`,
+    );
+
+    if (dbUrl === "mock") {
+      console.log("[AFRIPULSE] Using mock database - no initialization needed");
+      return;
+    }
+
     const { getPool } = require("./db/client");
     const pool = getPool();
 
@@ -112,6 +123,16 @@ app.use((req, res) => {
 
 async function startServer() {
   try {
+    // Log startup info
+    console.log(`[AFRIPULSE] Starting server...`);
+    console.log(
+      `[AFRIPULSE] NODE_ENV: ${process.env.NODE_ENV || "development"}`,
+    );
+    console.log(`[AFRIPULSE] PORT: ${process.env.PORT || 8080}`);
+    console.log(
+      `[AFRIPULSE] DATABASE_URL: ${process.env.DATABASE_URL || "not set"}`,
+    );
+
     await initializeDatabase();
 
     const port = Number(process.env.PORT || 8080);
@@ -123,6 +144,7 @@ async function startServer() {
       console.log(
         `[AFRIPULSE] Database URL: ${process.env.DATABASE_URL ? "configured" : "using mock"}`,
       );
+      console.log(`[AFRIPULSE] Health check: http://localhost:${port}/health`);
     });
   } catch (error) {
     console.error("[AFRIPULSE] Failed to start server:", error);

@@ -24,10 +24,13 @@ RUN if [ -f package-lock.json ]; then \
 # Copy source code
 COPY deliverables/AFRIPULSE_FINAL_CODE_SERVER_DB_v1.1/server/ ./
 
-# Set default environment variables
+# Set default environment variables (will be overridden by Coolify)
 ENV NODE_ENV=production
 ENV PORT=8080
 ENV DATABASE_URL=mock
+ENV JWT_SECRET=default_jwt_secret_change_in_production
+ENV WHATSAPP_WEBHOOK_VERIFY_TOKEN=default_webhook_token
+ENV CORS_ORIGIN=*
 
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
@@ -45,5 +48,5 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
         process.exit(res.statusCode === 200 ? 0 : 1) \
     }).on('error', () => process.exit(1))" || exit 1
 
-# Start application with proper error handling
-CMD ["sh", "-c", "echo 'Starting AFRIPULSE server...' && echo 'PORT: $PORT' && echo 'DATABASE_URL: ${DATABASE_URL:0:20}...' && npm start"]
+# Start application
+CMD ["npm", "start"]
