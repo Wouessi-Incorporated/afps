@@ -43,10 +43,11 @@ USER nodejs
 EXPOSE 8080
 
 # Health check
+# Health check for container orchestration (dynamic port)
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:8080/health', (res) => { \
+    CMD node -e "const port = process.env.PORT || 8080; require('http').get('http://localhost:' + port + '/health', (res) => { \
         process.exit(res.statusCode === 200 ? 0 : 1) \
     }).on('error', () => process.exit(1))" || exit 1
 
-# Start application with mock database
-CMD ["npm", "run", "start:mock"]
+# Start application with regular npm start
+CMD ["npm", "start"]

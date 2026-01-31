@@ -1,27 +1,26 @@
-require("dotenv").config();
+// AFRIPULSE Server Startup Script with Forced Mock Database
+// This script ensures the server always uses mock database, bypassing PostgreSQL entirely
+
+console.log('[AFRIPULSE] Starting with forced mock database...');
+
+// Force environment variables for mock database
+process.env.DATABASE_URL = 'mock';
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+
+console.log('[AFRIPULSE] Environment forced to:');
+console.log(`[AFRIPULSE] NODE_ENV: ${process.env.NODE_ENV}`);
+console.log(`[AFRIPULSE] PORT: ${process.env.PORT || 8080}`);
+console.log(`[AFRIPULSE] DATABASE_URL: ${process.env.DATABASE_URL}`);
+
+// Import required modules
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 
-const { healthRouter } = require("./routes/health");
-const { publicRouter } = require("./routes/public");
-const { whatsappRouter } = require("./routes/whatsapp");
-
-// Force mock database if no valid DATABASE_URL or if it contains 'db' hostname
-function shouldUseMockDatabase() {
-  const dbUrl = process.env.DATABASE_URL;
-  if (!dbUrl || dbUrl === "mock" || dbUrl.includes("@db:")) {
-    return true;
-  }
-  return false;
-}
-
-// Initialize mock database by default
-if (shouldUseMockDatabase()) {
-  process.env.DATABASE_URL = "mock";
-  console.log("[AFRIPULSE] Forcing mock database to avoid connection issues");
-}
+const { healthRouter } = require("./src/routes/health");
+const { publicRouter } = require("./src/routes/public");
+const { whatsappRouter } = require("./src/routes/whatsapp");
 
 const app = express();
 
@@ -68,10 +67,7 @@ app.use((err, req, res, next) => {
   console.error("[AFRIPULSE] Error:", err.stack);
   res.status(500).json({
     error: "Internal Server Error",
-    message:
-      process.env.NODE_ENV === "development"
-        ? err.message
-        : "Something went wrong",
+    message: process.env.NODE_ENV === "development" ? err.message : "Something went wrong",
   });
 });
 
@@ -80,28 +76,20 @@ app.use((req, res) => {
   res.status(404).json({ error: "Not Found", path: req.url });
 });
 
+// Start server function
 async function startServer() {
   try {
-    // Log startup info
     const port = Number(process.env.PORT || 8080);
-    const nodeEnv = process.env.NODE_ENV || "development";
-    const dbUrl = process.env.DATABASE_URL || "mock";
 
-    console.log(`[AFRIPULSE] Starting server...`);
-    console.log(`[AFRIPULSE] NODE_ENV: ${nodeEnv}`);
-    console.log(`[AFRIPULSE] PORT: ${port}`);
-    console.log(`[AFRIPULSE] DATABASE_URL: ${dbUrl}`);
-    console.log(`[AFRIPULSE] Using mock database - ready with sample data`);
+    console.log('[AFRIPULSE] Mock database is ready - no initialization needed');
 
     app.listen(port, "0.0.0.0", () => {
       console.log(`[AFRIPULSE] server listening on :${port}`);
-      console.log(`[AFRIPULSE] Environment: ${nodeEnv}`);
+      console.log(`[AFRIPULSE] Environment: ${process.env.NODE_ENV}`);
       console.log(`[AFRIPULSE] Database: mock (ready with sample data)`);
       console.log(`[AFRIPULSE] Health check: http://localhost:${port}/health`);
-      console.log(
-        `[AFRIPULSE] API ready: http://localhost:${port}/public/media-shares?country=NG&category=ALL`,
-      );
-      console.log(`[AFRIPULSE] ✅ Server started successfully!`);
+      console.log(`[AFRIPULSE] API ready: http://localhost:${port}/public/media-shares?country=NG&category=ALL`);
+      console.log('[AFRIPULSE] ✅ Server started successfully with mock database!');
     });
   } catch (error) {
     console.error("[AFRIPULSE] Failed to start server:", error);
@@ -109,4 +97,16 @@ async function startServer() {
   }
 }
 
+// Handle graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('[AFRIPULSE] Received SIGTERM, shutting down gracefully...');
+  process.exit(0);
+});
+
+process.on('SIGINT', () => {
+  console.log('[AFRIPULSE] Received SIGINT, shutting down gracefully...');
+  process.exit(0);
+});
+
+// Start the server
 startServer();
